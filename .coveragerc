@@ -1,0 +1,5 @@
+[run]
+include = data_profile_viewer/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
