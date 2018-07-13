@@ -256,5 +256,10 @@ ACCOUNT_ADAPTER = 'data_profile_viewer.users.adapters.AccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'data_profile_viewer.users.adapters.SocialAccountAdapter'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 30
+}
+
 # Your stuff...
 # ------------------------------------------------------------------------------
