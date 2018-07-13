@@ -5,8 +5,19 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+from rest_framework import routers
+
+from database.viewsets import TableViewSet, ColumnViewSet
+
+router = routers.DefaultRouter()
+router.register(r'table', TableViewSet)
+router.register(r'column', ColumnViewSet)
+
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path('api/', include(router.urls)),
+
     path(
         "about/",
         TemplateView.as_view(template_name="pages/about.html"),
@@ -14,7 +25,7 @@ urlpatterns = [
     ),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
-    # User management
+    # User managementF
     path(
         "users/",
         include("data_profile_viewer.users.urls", namespace="users"),
