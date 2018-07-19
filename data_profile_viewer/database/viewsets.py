@@ -8,6 +8,28 @@ class TableViewSet(viewsets.ModelViewSet):
 
     queryset = Table.objects.all()
     serializer_class = TableSerializer
+    lookup_field = 'name'
+
+    def get_queryset(self):
+        queryset = super(TableViewSet, self).get_queryset()
+        query = self.request.query_params.get("q", None)
+        if query:
+            queryset = queryset.filter(name__icontains=query)
+        return queryset
+
+    @action(detail=True)
+    def columns(self, request, name=None):
+        table = self.get_object()
+        columns = table.columns.all()
+        column_query = request.query_params.get("cq", None)
+        if column_query:
+            columns = columns.filter(name__icontains=column_query)
+        page = self.paginate_queryset(columns)
+        if page is not None:
+            serializer = ColumnSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = ColumnSerializer(columns, many=True)
+        return Response(serializer.data)
 
 
 class ColumnViewSet(viewsets.ModelViewSet):
