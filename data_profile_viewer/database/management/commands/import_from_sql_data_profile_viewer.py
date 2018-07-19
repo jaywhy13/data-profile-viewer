@@ -131,9 +131,10 @@ class Command(BaseCommand):
                 if other_attribute in column_data:
                     defaults[other_attribute] = \
                         column_data.get(other_attribute)
-
-            print("Updating column {}".format(column_name))
-            pprint(defaults)
+            # Update the null ratio based on the table
+            if table.number_of_rows > 0 and "null_count" in column_data:
+                defaults["percentage_of_nulls"] = \
+                    column_data["null_count"] / table.number_of_rows
             column, _ = Column.objects.update_or_create(table=table,
                                                         name=column_name,
                                                         defaults=defaults)
