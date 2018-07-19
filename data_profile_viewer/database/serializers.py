@@ -6,6 +6,7 @@ class TableSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ["name", "schema", "number_of_rows", "number_of_columns", "average_percentage_of_nulls"]
         model = Table
+        lookup_field = 'name'
 
 
 class ColumnSerializer(serializers.ModelSerializer):
