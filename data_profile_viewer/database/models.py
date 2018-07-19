@@ -52,13 +52,23 @@ class Column(TimeStampedModel):
     is_null = models.NullBooleanField()
     null_count = models.DecimalField(
         max_digits=11, decimal_places=2, null=True, db_index=True,
-        verbose_name=_('Percentage of nulls'))
+        verbose_name=_('Number of null values'))
+    percentage_of_nulls = models.DecimalField(
+        max_digits=11, decimal_places=2, null=True, db_index=True,
+        verbose_name=_('Percentage of null values'))
     unique_values = models.IntegerField(
         blank=True, null=True, db_index=True,
         verbose_name=_('Number of unique values'))
     has_duplicates = models.NullBooleanField(
         verbose_name=_('Does the column contain duplicates'),
         db_index=True)
+    is_structured = models.NullBooleanField(
+        verbose_name=_('Is well structured'),
+        db_index=True)
+    needs_index = models.NullBooleanField(
+        verbose_name=_('Needs index'),
+        db_index=True)
+    comments = models.ManyToManyField("Comment", blank=True, null=True)
 
     def __str__(self):
         return self.name
