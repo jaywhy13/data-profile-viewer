@@ -3,6 +3,10 @@ Base settings to build other settings files upon.
 """
 
 import environ
+import os
+
+BASE_DIR = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 ROOT_DIR = environ.Path(__file__) - 3  # (data_profile_viewer/config/settings/base.py - 3 = data_profile_viewer/)
 APPS_DIR = ROOT_DIR.path('data_profile_viewer')
@@ -67,6 +71,7 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'webpack_loader',
 ]
 LOCAL_APPS = [
     'data_profile_viewer.users.apps.UsersAppConfig',
@@ -259,6 +264,14 @@ SOCIALACCOUNT_ADAPTER = 'data_profile_viewer.users.adapters.SocialAccountAdapter
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 30
+}
+
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+            'BUNDLE_DIR_NAME': 'bundles/',
+            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
+        }
 }
 
 # Your stuff...
