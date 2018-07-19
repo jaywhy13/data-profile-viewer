@@ -71,6 +71,7 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'raven.contrib.django.raven_compat',
     'webpack_loader',
 ]
 LOCAL_APPS = [
@@ -271,6 +272,16 @@ WEBPACK_LOADER = {
             'BUNDLE_DIR_NAME': 'bundles/',
             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
         }
+}
+
+
+import raven
+
+RAVEN_CONFIG = {
+    'dsn': 'https://565af9953ac744a5a038722f2d315fcb:48e36a887c1544afab70bcc9325eb569@sentry.io/1245958',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    # 'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
 
 # Your stuff...
