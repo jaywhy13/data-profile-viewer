@@ -22,6 +22,16 @@ class Table(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    @property
+    def number_of_columns(self):
+        return self.columns.count()
+
+    @property
+    def average_percentage_of_nulls(self):
+        return self.columns.aggregate(
+            average_percentage_of_nulls=Avg("percentage_of_nulls")).\
+            get("average_percentage_of_nulls")
+
 
 class Column(TimeStampedModel):
 
