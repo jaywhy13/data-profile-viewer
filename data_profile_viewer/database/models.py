@@ -35,6 +35,9 @@ class Table(TimeStampedModel):
 
 class Column(TimeStampedModel):
 
+    class Meta:
+        ordering = ['name']
+
     table = models.ForeignKey(
         Table, db_index=True, null=True, blank=True,
         related_name='columns', on_delete=models.CASCADE)
