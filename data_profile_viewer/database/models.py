@@ -15,6 +15,9 @@ class Table(TimeStampedModel):
         max_length=255, blank=True, null=True, db_index=True)
     number_of_rows = models.IntegerField(
         blank=True, null=True, db_index=True)
+    use_for_bi = models.BooleanField(default=False)
+    description = models.TextField(blank=True, null=True)
+    comments = models.ManyToManyField("Comment", blank=True, null=True)
 
     def __str__(self):
         return self.name
