@@ -4,7 +4,7 @@ from database.models import Table, Column
 
 class TableSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["name", "schema", "number_of_rows"]
+        fields = ["name", "schema", "number_of_rows", "number_of_columns", "average_percentage_of_nulls"]
         model = Table
 
 
@@ -13,6 +13,7 @@ class ColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Column
         fields = [
+            "id",
             "table",
             "name",
             "data_type",
@@ -24,5 +25,8 @@ class ColumnSerializer(serializers.ModelSerializer):
             "is_null",
             "null_count",
             "unique_values",
-            "has_duplicates"
+            "has_duplicates",
+            "percentage_of_nulls",
+            "is_structured",
+            "needs_index"
         ]
