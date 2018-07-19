@@ -9,6 +9,7 @@ from rest_framework import routers
 
 from database.viewsets import TableViewSet, ColumnViewSet
 from database.views import SQLIndexesView
+from users.views import HomePageView
 
 router = routers.DefaultRouter()
 router.register(r'table', TableViewSet)
@@ -16,7 +17,7 @@ router.register(r'column', ColumnViewSet)
 
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", HomePageView.as_view(), name="home"),
     path("sql/", SQLIndexesView.as_view(), name="sql-indexes"),
     path('api/', include(router.urls)),
 
