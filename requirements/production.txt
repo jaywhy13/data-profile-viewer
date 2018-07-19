@@ -11,3 +11,4 @@ django-heroku
 # ------------------------------------------------------------------------------
 django-storages[boto3]==1.6.6  # https://github.com/jschneier/django-storages
 django-anymail[mailgun]==3.0  # https://github.com/anymail/django-anymail
+django-debug-toolbar==1.9.1  # https://github.com/jazzband/django-debug-toolbar
