@@ -5,6 +5,10 @@ from django_extensions.db.models import TimeStampedModel
 
 
 class Table(TimeStampedModel):
+
+    class Meta:
+        ordering = ['name']
+
     name = models.CharField(
         max_length=255, blank=True, null=True, db_index=True)
     schema = models.CharField(
