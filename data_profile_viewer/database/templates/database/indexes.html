@@ -1,0 +1,10 @@
+-- All indexes
+<br>
+<br>
+{% for column in columns %}
+-- Indexes for {{ column.table.name }}.{{ column.name }} <br>
+DROP INDEX {{ column.table.name }}.{{ column.name }}; <br>
+CREATE INDEX {{ column.table.name }}.{{ column.name }}; <br>
+
+<br>
+{% endfor %}

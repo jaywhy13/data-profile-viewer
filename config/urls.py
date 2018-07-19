@@ -8,6 +8,7 @@ from django.views import defaults as default_views
 from rest_framework import routers
 
 from database.viewsets import TableViewSet, ColumnViewSet
+from database.views import SQLIndexesView
 
 router = routers.DefaultRouter()
 router.register(r'table', TableViewSet)
@@ -16,6 +17,7 @@ router.register(r'column', ColumnViewSet)
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("sql/", SQLIndexesView.as_view(), name="sql-indexes"),
     path('api/', include(router.urls)),
 
     path(
