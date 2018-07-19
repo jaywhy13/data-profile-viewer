@@ -5,7 +5,7 @@ import untangle
 import logging
 from django.core.management.base import BaseCommand
 
-from database.models import Table, Column
+from database.models import Table, Column, ValueDistribution
 
 logger = logging.getLogger(__name__)
 
@@ -83,11 +83,21 @@ class Command(BaseCommand):
             column_data["maximum"] = column_profile.MaxValue.cdata
         if hasattr(column_profile, "StdDev"):
             column_data["standard_deviation"] = column_profile.StdDev.cdata
+        if hasattr(column_profile, "NumberOfDistinctValues"):
+            column_data["unique_values"] = \
+                column_profile.NumberOfDistinctValues.cdata or 0
+        if hasattr(column_profile, "ValueDistribution"):
+            values_and_counts = \
+                column_profile.ValueDistribution.ValueDistributionItem
+            value_distributions = \
+                column_data.setdefault("value_distributions", [])
+            for value_distribution_item in values_and_counts:
+                value = value_distribution_item.Value.cdata
+                count = value_distribution_item.Count.cdata or 0
+                value_distributions.append((value, count))
 
     def _save_cached_tables_and_columns(self):
         print("Saving column profile cache")
-        print(self.table_cache)
-        print(self.column_cache)
         created_tables = {}
         for table_name in self.table_cache:
             table_data = self.table_cache.get(table_name)
@@ -97,6 +107,7 @@ class Command(BaseCommand):
             created_tables[table_name] = table
         for column_name in self.column_cache:
             column_data = self.column_cache.get(column_name)
+            value_distributions = column_data.pop("value_distributions", [])
             table_name = column_data.get("table_name")
             table = created_tables.get(table_name)
             if not table:
@@ -114,6 +125,7 @@ class Command(BaseCommand):
                 "maximum",
                 "standard_deviation",
                 "null_count",
+                "unique_values"
             ]
             for other_attribute in other_attributes:
                 if other_attribute in column_data:
@@ -125,6 +137,14 @@ class Command(BaseCommand):
             column, _ = Column.objects.update_or_create(table=table,
                                                         name=column_name,
                                                         defaults=defaults)
+            # Saving value distributions
+            for value, count in value_distributions:
+                defaults = {
+                    "count": count
+                }
+                ValueDistribution.objects.update_or_create(column=column,
+                                                           value=value,
+                                                           defaults=defaults)
         self.column_cache = {}
         self.table_cache = {}
 
