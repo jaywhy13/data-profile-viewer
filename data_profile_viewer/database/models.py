@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg
 from django.utils.translation import gettext as _
 
 from django_extensions.db.models import TimeStampedModel
@@ -72,6 +73,21 @@ class Column(TimeStampedModel):
 
     def __str__(self):
         return self.name
+
+
+class ValueDistribution(TimeStampedModel):
+
+    class Meta:
+        ordering = ["value"]
+
+    column = models.ForeignKey(
+        "Column", related_name="value_distributions",
+        on_delete=models.CASCADE)
+    value = models.TextField(null=True, blank=True)
+    count = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return "Value: {}, Count: {}".format(self.value, self.count)
 
 
 class ColumnStatistics(TimeStampedModel):
