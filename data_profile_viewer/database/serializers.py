@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from database.models import Table, Column
+from database.models import Table, Column, ValueDistribution
 
 class TableSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +30,8 @@ class ColumnSerializer(serializers.ModelSerializer):
             "is_structured",
             "needs_index"
         ]
+
+class ValueDistributionSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ["value", "count"]
+        model = ValueDistribution
