@@ -10,9 +10,7 @@ INSTALLED_APPS += ['gunicorn']  # noqa F405
 
 
 # Setup for Webpack
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "frontend", "assets"),
-]
+STATICFILES_DIRS += [os.path.join(BASE_DIR, "frontend", "assets")]
 
 WEBPACK_LOADER = {
     'DEFAULT': {
