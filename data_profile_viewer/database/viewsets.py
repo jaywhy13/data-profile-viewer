@@ -1,7 +1,11 @@
 from rest_framework import viewsets
 
-from database.models import Table, Column
-from database.serializers import TableSerializer, ColumnSerializer
+from database.models import Table, Column, ValueDistribution
+from database.serializers import (
+    TableSerializer,
+    ColumnSerializer,
+    ValueDistributionSerializer
+)
 
 
 class TableViewSet(viewsets.ModelViewSet):
@@ -75,4 +79,10 @@ class ColumnViewSet(viewsets.ModelViewSet):
         serializer = ValueDistributionSerializer(
             value_distributions, many=True)
         return Response(serializer.data)
+
+
+class ValueDistributionViewSet(viewsets.ModelViewSet):
+
+    queryset = ValueDistribution.objects.all()
+    serializer_class = ValueDistributionSerializer
 
