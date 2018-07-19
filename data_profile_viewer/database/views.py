@@ -1,9 +1,10 @@
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from database.models import Column
 
 
-class SQLIndexesView(TemplateView):
+class SQLIndexesView(LoginRequiredMixin, TemplateView):
 
     template_name = "database/indexes.html"
     context_type = "text/richtext"
