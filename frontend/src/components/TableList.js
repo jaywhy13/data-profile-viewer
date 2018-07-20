@@ -43,7 +43,18 @@ class TableList extends React.Component {
                 'numberOfPages': Math.round(response.data.count / 30)
             })
         });
+    }
 
+    updateUseForBi (table) {
+        axios.post(`/api/table/${table.name}/update_use_for_bi/`, {use_for_bi: !table.use_for_bi}).then((response) => {
+            let updatedTables = this.state.tables.map((table_) => {
+                if(table_.name === table.name){
+                    table_.use_for_bi = !table.use_for_bi;
+                }
+                return table_;
+            });
+            this.setState({tables: updatedTables});
+        });
     }
 
     handleSearch(event) {
@@ -68,6 +79,12 @@ class TableList extends React.Component {
                     <td>
                         {Math.round(table.average_percentage_of_nulls * 100)}%
                     </td>
+                    <td>
+                        <input 
+                            type="checkbox" checked={table.use_for_bi}
+                            onClick={() => {this.updateUseForBi(table)}}
+                            />
+                    </td>
                 </tr>);
         });
 
@@ -85,6 +102,7 @@ class TableList extends React.Component {
                             <th>Number of rows</th>
                             <th>Number of columns</th>
                             <th>Avg null in columns</th>
+                            <th>Use for BI</th>
                         </tr>
                     </thead>
                     <tbody>
