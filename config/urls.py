@@ -8,7 +8,7 @@ from django.views import defaults as default_views
 from rest_framework import routers
 
 from database.viewsets import TableViewSet, ColumnViewSet
-from database.views import SQLIndexesView
+from database.views import SQLIndexesView, SQLTruncateView
 from users.views import HomePageView
 
 router = routers.DefaultRouter()
@@ -19,6 +19,7 @@ router.register(r'column', ColumnViewSet)
 urlpatterns = [
     path("", HomePageView.as_view(), name="home"),
     path("sql/", SQLIndexesView.as_view(), name="sql-indexes"),
+    path("truncate/", SQLTruncateView.as_view(), name="sql-truncate"),
     path('api/', include(router.urls)),
 
     path(

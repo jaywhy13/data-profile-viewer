@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from database.models import Column
+from database.models import Column, Table
 
 
 class SQLIndexesView(LoginRequiredMixin, TemplateView):
@@ -13,4 +13,16 @@ class SQLIndexesView(LoginRequiredMixin, TemplateView):
         ctx =super(SQLIndexesView, self).get_context_data(**kwargs)
         columns = Column.objects.filter(needs_index=True)
         ctx["columns"] = columns
+        return ctx
+
+
+class SQLTruncateView(LoginRequiredMixin, TemplateView):
+
+    template_name = "database/truncate.html"
+    context_type = "text/richtext"
+
+    def get_context_data(self, **kwargs):
+        ctx =super(SQLTruncateView, self).get_context_data(**kwargs)
+        tables = Table.objects.filter()
+        ctx["tables"] = tables
         return ctx
