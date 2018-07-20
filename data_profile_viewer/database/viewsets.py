@@ -1,6 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 from database.models import Table, Column, ValueDistribution
 from database.serializers import (
@@ -10,11 +14,20 @@ from database.serializers import (
 )
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+
+
 class TableViewSet(viewsets.ModelViewSet):
 
     queryset = Table.objects.all()
     serializer_class = TableSerializer
     lookup_field = 'name'
+    authentication_classes = (
+        BasicAuthentication, CsrfExemptSessionAuthentication)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = super(TableViewSet, self).get_queryset()
@@ -37,11 +50,23 @@ class TableViewSet(viewsets.ModelViewSet):
         serializer = ColumnSerializer(columns, many=True)
         return Response(serializer.data)
 
+    @action(methods=['post'], detail=True)
+    def update_use_for_bi(self, request, name=None):
+        table = self.get_object()
+        use_for_bi = request.data.get("use_for_bi")
+        table.use_for_bi = use_for_bi
+        table.save()
+        serializer = TableSerializer(table, many=False)
+        return Response(serializer.data)
+
 
 class ColumnViewSet(viewsets.ModelViewSet):
 
     queryset = Column.objects.all()
     serializer_class = ColumnSerializer
+    authentication_classes = (
+        BasicAuthentication, CsrfExemptSessionAuthentication)
+    permission_classes = (IsAuthenticated,)
 
     @action(methods=['post'], detail=True)
     def update_has_duplicates(self, request, pk=None):
