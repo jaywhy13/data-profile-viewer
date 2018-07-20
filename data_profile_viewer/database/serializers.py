@@ -4,7 +4,10 @@ from database.models import Table, Column, ValueDistribution
 
 class TableSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ["name", "schema", "number_of_rows", "number_of_columns", "average_percentage_of_nulls"]
+        fields = [
+            "name", "schema", "number_of_rows",
+            "number_of_columns", "average_percentage_of_nulls",
+            "use_for_bi"]
         model = Table
         lookup_field = 'name'
 
@@ -29,7 +32,7 @@ class ColumnSerializer(serializers.ModelSerializer):
             "has_duplicates",
             "percentage_of_nulls",
             "is_structured",
-            "needs_index"
+            "needs_index",
         ]
 
 class ValueDistributionSerializer(serializers.ModelSerializer):
