@@ -6,7 +6,7 @@
 
 CREATE INDEX IX_DWH_{{ column.table.name }}_{{ column.name }} ON {{ column.table.name }} ({{column.name}}) <br>
 
-DROP INDEX IX_DWH_{{ column.table.name }}_{{ column.name }} ON {{ column.table.name }} <br>
+DROP INDEX IF EXISTS IX_DWH_{{ column.table.name }}_{{ column.name }} ON {{ column.table.name }} <br>
 
 <br>
 {% endfor %}
