@@ -100,7 +100,7 @@ class TableDetail extends React.Component {
                     placeholder="Filter for columns"
                 />
 
-                <table className="table table-hover">
+                <table className="table table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>

@@ -95,7 +95,7 @@ class TableList extends React.Component {
                     onChange={this.handleSearch}
                     placeholder="Filter for tables"
                 />
-                <table className="table table-hover">
+                <table className="table table-striped">
                     <thead>
                         <tr>
                             <th>Table</th>
