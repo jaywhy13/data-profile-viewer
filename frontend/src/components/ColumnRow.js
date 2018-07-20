@@ -18,6 +18,7 @@ class ColumnRow extends React.Component {
     }
 
     updateIsStructured() {
+        console.log("Updating is structured");
         axios.post(`/api/column/${this.state.id}/update_is_structured/`,
                 {is_structured: !this.state.is_structured}).then((response) => {
             this.setState({is_structured: response.data.is_structured})
@@ -70,19 +71,19 @@ class ColumnRow extends React.Component {
                 </td>
                 <td>
                     <input 
-                        type="checkbox" defaultChecked={this.state.has_duplicates} 
+                        type="checkbox" checked={this.state.has_duplicates} 
                         onChange={this.updateHasDuplicates}
                     />
                 </td>
                 <td>
                     <input 
-                        type="checkbox" defaultChecked={this.state.is_structured} 
+                        type="checkbox" checked={this.state.is_structured} 
                         onChange={this.updateIsStructured}
                     />
                 </td>
                 <td>
                     <input 
-                        type="checkbox" defaultChecked={this.state.needs_index} 
+                        type="checkbox" checked={this.state.needs_index} 
                         onChange={this.updateNeedsIndex}
                     />
                 </td>
