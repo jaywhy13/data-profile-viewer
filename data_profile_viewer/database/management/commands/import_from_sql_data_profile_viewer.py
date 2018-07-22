@@ -71,7 +71,7 @@ class Command(BaseCommand):
             self.get_column_name(table_name, column_profile)
         if not column_name:
             raise Exception("There is a column here on {} that has NO name".format(table_name))
-        print("Caching {}.{}".format(table_name, column_name))
+        # print("Caching {}.{}".format(table_name, column_name))
         column_key = self._build_column_key(table_name, column_name)
         column_data = self.column_cache.setdefault(column_key, {})
         column_data["name"] = column_name
@@ -101,7 +101,7 @@ class Command(BaseCommand):
                 value = value_distribution_item.Value.cdata
                 count = value_distribution_item.Count.cdata or 0
                 value_distributions.append((value, count))
-        pprint(column_data)
+        # pprint(column_data)
 
     def _save_cached_tables_and_columns(self):
         print("> Saving {} tables and {} columns".format(
@@ -116,8 +116,8 @@ class Command(BaseCommand):
             _, column_name = self._extract_column_key(column_key)
             column_data = self.column_cache.get(column_key)
             table_name = column_data.get("table_name")
-            print("Saving {}.{}".format(table_name, column_data))
-            pprint(column_data)
+            # print("Saving {}.{}".format(table_name, column_data))
+            # pprint(column_data)
             value_distributions = column_data.pop("value_distributions", [])
             table = self.created_tables.get(table_name)
             if not table:
