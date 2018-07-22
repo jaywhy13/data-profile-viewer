@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = "Import data from an SQL Data Profile Viewer XML file"
 
+    created_tables = {}
     column_cache = {}
     table_cache = {}
 
@@ -25,6 +26,7 @@ class Command(BaseCommand):
         column_profiles = self.get_column_profiles()
         for column_profile in column_profiles:
             self.save_tables_and_columns(column_profile)
+        self._save_cached_tables_and_columns()
 
     def parse_xml_profile_data(self, file=None):
         """ Reads in the XML profile data
@@ -50,12 +52,12 @@ class Command(BaseCommand):
             yield profile
 
     def save_tables_and_columns(self, column_profile):
+        self._cache_tables_and_columns(column_profile)
         if self._is_cache_full():
             self._save_cached_tables_and_columns()
-        self._cache_tables_and_columns(column_profile)
 
     def _is_cache_full(self):
-        return len(self.column_cache) > 100
+        return len(self.column_cache) > 200
 
     def _cache_tables_and_columns(self, column_profile):
         table_name = \
@@ -65,9 +67,13 @@ class Command(BaseCommand):
         table_data["number_of_rows"] = \
             int(column_profile.Table["RowCount"])
         table_data["schema"] = self.get_table_schema(column_profile)
-        column_name, column_data = \
-            self.get_column_name_and_data(table_name, column_profile)
-        column_data = self.column_cache.setdefault(column_name, {})
+        column_name = \
+            self.get_column_name(table_name, column_profile)
+        if not column_name:
+            raise Exception("There is a column here on {} that has NO name".format(table_name))
+        print("Caching {}.{}".format(table_name, column_name))
+        column_key = self._build_column_key(table_name, column_name)
+        column_data = self.column_cache.setdefault(column_key, {})
         column_data["name"] = column_name
         column_data["table_name"] = table_name
         column_data["data_type"] = column_profile.Column["SqlDbType"]
@@ -95,21 +101,25 @@ class Command(BaseCommand):
                 value = value_distribution_item.Value.cdata
                 count = value_distribution_item.Count.cdata or 0
                 value_distributions.append((value, count))
+        pprint(column_data)
 
     def _save_cached_tables_and_columns(self):
-        print("Saving column profile cache")
-        created_tables = {}
+        print("> Saving {} tables and {} columns".format(
+            len(self.table_cache), len(self.column_cache)))
         for table_name in self.table_cache:
             table_data = self.table_cache.get(table_name)
             table, _ = \
                 Table.objects.update_or_create(name=table_name,
                                                defaults=table_data)
-            created_tables[table_name] = table
-        for column_name in self.column_cache:
-            column_data = self.column_cache.get(column_name)
-            value_distributions = column_data.pop("value_distributions", [])
+            self.created_tables[table_name] = table
+        for column_key in self.column_cache:
+            _, column_name = self._extract_column_key(column_key)
+            column_data = self.column_cache.get(column_key)
             table_name = column_data.get("table_name")
-            table = created_tables.get(table_name)
+            print("Saving {}.{}".format(table_name, column_data))
+            pprint(column_data)
+            value_distributions = column_data.pop("value_distributions", [])
+            table = self.created_tables.get(table_name)
             if not table:
                 raise Exception("Could not find table: {} for {}".format(
                     table_name, column_name))
@@ -158,9 +168,14 @@ class Command(BaseCommand):
         schema = column_profile.Table["Schema"]
         return schema
 
-    def get_column_name_and_data(self, table_name, column_profile):
+    def get_column_name(self, table_name, column_profile):
         column_name = column_profile.Column["Name"]
-        column_data = {}
-        return column_name, column_data
+        return column_name
+
+    def _build_column_key(self, table_name, column_name):
+        return "{}--{}".format(table_name, column_name)
+
+    def _extract_column_key(self, column_key):
+        return column_key.split("--")
 
 
