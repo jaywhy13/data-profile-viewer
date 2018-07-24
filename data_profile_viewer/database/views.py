@@ -11,8 +11,8 @@ class SQLIndexesView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx =super(SQLIndexesView, self).get_context_data(**kwargs)
-        columns = Column.objects.filter(needs_index=True)
-        ctx["columns"] = columns
+        tables = Table.objects.all()
+        ctx["tables"] = tables
         return ctx
 
 

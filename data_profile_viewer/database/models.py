@@ -33,6 +33,10 @@ class Table(TimeStampedModel):
             average_percentage_of_nulls=Avg("percentage_of_nulls")).\
             get("average_percentage_of_nulls")
 
+    @property
+    def columns_needing_indexes(self):
+        return self.columns.filter(needs_index=True)
+
 
 class Column(TimeStampedModel):
 

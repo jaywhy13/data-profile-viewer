@@ -1,12 +1,49 @@
 -- All indexes
 <br>
 <br>
-{% for column in columns %}
--- Indexes for {{ column.table.name }}.{{ column.name }} <br>
+-- Create indexes --------------------------------------<br>
+-------------------------------------------------------- <br>
+-------------------------------------------------------- <br>
+<br>
 
-CREATE INDEX IX_DWH_{{ column.table.name }}_{{ column.name }} ON {{ column.table.name }} ({{column.name}}) <br>
-
-DROP INDEX IF EXISTS IX_DWH_{{ column.table.name }}_{{ column.name }} ON {{ column.table.name }} <br>
+{% for table in tables %}
+    {% with columns=table.columns_needing_indexes %}
+        {% if columns %}
+        -- Index statements for {{ table.name }} <br>
+            {% for column in columns %}
+                CREATE INDEX IX_DWH_{{ table.name }}_{{ column.name }} ON {{ table.name }} ({{column.name}}) <br>            
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endfor %}
 
 <br>
+<br>
+-- Drop indexes ----------------------------------------<br>
+-------------------------------------------------------- <br>
+-------------------------------------------------------- <br>
+<br>
+
+{% for table in tables %}
+    {% with columns=table.columns_needing_indexes %}
+        {% if columns %}
+        -- Index statements for {{ table.name }} <br>
+            {% for column in columns %}
+                DROP INDEX IF EXISTS IX_DWH_{{ table.name }}_{{ column.name }} ON {{ table.name }} <br>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 {% endfor %}
+
+<br>
+<br>
+-- Truncate tables -------------------------------------<br>
+-------------------------------------------------------- <br>
+-------------------------------------------------------- <br>
+<br>
+{% for table in tables %}
+    TRUNCATE TABLE {{ table.name }}; <br>
+{% endfor %}
+
+
+
